@@ -58,7 +58,7 @@ class Game:
 
     def update_game(self):
         # Fill the window with the background color
-        self.window.fill(self.background.color)
+        self.window.window.fill(self.background.color)
 
         # Generate and draw obstacles 
         self.obstacles.generate_obstacles(self.window, self.mode)
@@ -70,6 +70,8 @@ class Game:
         # Check for collisions
         if self.hero.check_collision(self.obstacles.get_obstacles()):
             self.game_state.is_game_over = True
+            sound = pygame.mixer.Sound('assets/ouch.mp3')
+            sound.play()
         
         # Check score
         self.score.check_score(self.obstacles.get_obstacles(), self.hero)

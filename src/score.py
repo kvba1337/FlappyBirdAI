@@ -9,6 +9,9 @@ class Score:
         for obstacle in obstacles:
             if obstacle.position.x <= hero.hitbox.x < obstacle.position.x + 1:
                 self.score += 0.5
+                if self.score % 1 == 0:
+                    sound = pygame.mixer.Sound('assets/scored_point.mp3')
+                    sound.play()
 
     def display_score(self, window):
         font = pygame.font.Font(None, 36)
