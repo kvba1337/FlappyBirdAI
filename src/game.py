@@ -1,83 +1,86 @@
 import pygame
 from pygame.locals import *
-import src.myconstants as myconstants
-from src.background import Background
+import src.config as config
 from src.hero import Hero
 from src.obstacle import Obstacles
 from src.window import Window
-from src.game_state import GameState
-from src.score import Score
+from src.overlay import print_score, print_game_over, print_paused
 
 class Game:
     def __init__(self):
         pygame.init()
-        self.window = Window(myconstants.GAME_WIDTH, myconstants.GAME_HEIGHT)
-        self.background = Background(self.window.width, self.window.height)
-        self.hero = Hero(myconstants.RESPAWN_POSITION_X, myconstants.RESPAWN_POSITION_Y, "assets/kasia.png")
+        self.window = Window(config.GAME_WIDTH, config.GAME_HEIGHT)
+        self.hero = Hero(config.RESPAWN_POSITION_X, config.RESPAWN_POSITION_Y, "assets/kasia.png")
         self.obstacles = Obstacles()
-        self.game_state = GameState()
         self.clock = pygame.time.Clock()
-        self.score = Score()
-        self.mode = myconstants.MODE
+        self.game_state = "running"
+        self.score = 0
+        self.best_score = 0
+
+    def check_score(self, obstacles, hero):
+        for obstacle in obstacles:
+            if obstacle.position.x <= hero.hitbox.x < obstacle.position.x + 1:
+                self.score += 0.5
+                if self.score % 1 == 0:
+                    sound = pygame.mixer.Sound('assets/scored_point.mp3')
+                    sound.play()
+
+    def start_new_game(self):
+        self.hero.hitbox.center = config.RESPAWN_POSITION_X, config.RESPAWN_POSITION_Y
+        self.hero.velocity = 0
+        self.obstacles.clear()
+        self.score = 0
+        self.obstacles.counter = 0
+        self.game_state = "running"
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == QUIT:
-                return True
+                pygame.quit()
+                quit()
             elif event.type == KEYDOWN:
-                if event.key == K_SPACE or event.key == K_UP:
+                if (event.key == K_SPACE or event.key == K_UP) and not self.game_state == "paused" and not self.game_state == "game_over":
                     self.hero.flap()
-                elif (event.key == K_p or event.key == K_ESCAPE) and not self.game_state.is_game_over:
-                    self.game_state.is_paused = not self.game_state.is_paused
+                elif (event.key == K_p or event.key == K_ESCAPE) and not self.game_state == "game_over":
+                    self.game_state = "paused" if self.game_state == "running" else "running"
                 elif event.key == K_ESCAPE:
-                    self.obstacles.clear()
-                    self.hero.hitbox.center = myconstants.RESPAWN_POSITION_X, myconstants.RESPAWN_POSITION_Y
-                    self.score.score = 0
-                    self.obstacles.counter = 0
-                    self.game_state.is_game_over = False
-                    self.hero.flap()
-
-        return False
+                    self.start_new_game()
 
     def run(self):
-        quit_game = False
-        while not quit_game:
-            quit_game = self.handle_events()
+        while True:
+            self.handle_events()
 
-            if self.game_state.is_paused:
-                self.game_state.paused(self.window)
-            elif self.game_state.is_game_over:
-                self.game_state.game_over(self.window, self.score)
+            if self.game_state == "paused":
+                print_paused(self.window.display_surface)
+            elif self.game_state == "game_over":
+                if self.score > self.best_score:
+                    self.best_score = self.score
+                print_game_over(self.window.display_surface, self.score, self.best_score)
             else:
                 self.update_game()
     
             pygame.display.update()
-            self.clock.tick(myconstants.FPS)
-
-        pygame.quit()
+            self.clock.tick(config.FPS)
 
     def update_game(self):
         # Fill the window with the background color
-        self.window.window.fill(self.background.color)
+        self.window.display_surface.fill(config.WHITE)
 
         # Generate and draw obstacles 
-        self.obstacles.generate_obstacles(self.window, self.mode)
-        self.obstacles.draw(self.window.window)
-        
-        # Draw the hero
-        self.hero.draw(self.window.window)
+        self.obstacles.generate_obstacles()
+        self.obstacles.draw(self.window.display_surface)
+        self.obstacles.update()
         
         # Check for collisions
         if self.hero.check_collision(self.obstacles.get_obstacles()):
-            self.game_state.is_game_over = True
+            self.game_state = "game_over"
             sound = pygame.mixer.Sound('assets/ouch.mp3')
             sound.play()
-        
+        else:
+            self.hero.draw(self.window.display_surface)
+            self.hero.update()
+            
         # Check score
-        self.score.check_score(self.obstacles.get_obstacles(), self.hero)
-        if not self.game_state.is_game_over: self.score.display_score(self.window)
-        
-        # Update the game state
-        self.hero.update()
-        self.obstacles.update(self.background)
-        self.background.update()
+        self.check_score(self.obstacles.get_obstacles(), self.hero)
+        if not self.game_state == "game_over": 
+            print_score(self.window.display_surface, self.score)

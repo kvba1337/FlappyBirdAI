@@ -1,15 +1,15 @@
 import pygame
-import src.myconstants as myconstants
+import src.config as config
 
 class Hero:
     def __init__(self, x, y, image_path):
         self.image = pygame.image.load(image_path)
-        self.image = pygame.transform.scale(self.image, myconstants.HERO_SIZE)
+        self.image = pygame.transform.scale(self.image, config.HERO_SIZE)
         self.hitbox = self.image.get_rect()
         self.hitbox.center = (x, y)
         self.velocity = 0
-        self.gravity = myconstants.GRAVITY
-        self.flap_strength = myconstants.FLAP_STRENGTH
+        self.gravity = config.GRAVITY
+        self.flap_strength = config.FLAP_STRENGTH
 
     def flap(self):
         self.velocity = self.flap_strength
@@ -26,7 +26,7 @@ class Hero:
             if self.hitbox.colliderect(obstacle.position):
                 return True
             
-        if self.hitbox.top < 0 or self.hitbox.bottom > myconstants.GAME_HEIGHT:
+        if self.hitbox.top < 0 or self.hitbox.bottom > config.GAME_HEIGHT:
             return True
         
         return False
