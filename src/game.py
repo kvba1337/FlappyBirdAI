@@ -12,7 +12,6 @@ class Game:
         self.window = Window(config.GAME_WIDTH, config.GAME_HEIGHT)
         self.hero = Hero(config.RESPAWN_POSITION_X, config.RESPAWN_POSITION_Y, "assets/kasia.png")
         self.obstacles = Obstacles()
-        self.clock = pygame.time.Clock()
         self.game_state = "running"
         self.score = 0
         self.best_score = 0
@@ -48,6 +47,8 @@ class Game:
 
     def run(self):
         while True:
+            start_time = pygame.time.get_ticks()
+
             self.handle_events()
 
             if self.game_state == "paused":
@@ -60,7 +61,7 @@ class Game:
                 self.update_game()
     
             pygame.display.update()
-            self.clock.tick(config.FPS)
+            pygame.time.delay(1000 // config.FPS - (pygame.time.get_ticks() - start_time))
 
     def update_game(self):
         # Fill the window with the background color
