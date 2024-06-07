@@ -19,7 +19,7 @@ class Obstacles:
     
     def next_obstacle(self, hero):
         for obstacle in self.obstacles:
-            if obstacle.position.x > hero.hitbox.x - 100:
+            if obstacle.position.x > hero.hitbox.x - 50:
                 return obstacle
         return None
 

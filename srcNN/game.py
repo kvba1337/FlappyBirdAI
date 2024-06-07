@@ -1,11 +1,12 @@
 import pygame
+import pickle
 from pygame.locals import *
-from srcAI.window import Window 
-from srcAI.hero import Hero 
-from srcAI.obstacle import Obstacles  
-from srcAI.overlay import print_fps, print_alive_counter, print_score, print_information 
-from srcAI.neural_network import Matrix
-import srcAI.config as config 
+from srcNN.window import Window 
+from srcNN.hero import Hero 
+from srcNN.obstacle import Obstacles  
+from srcNN.overlay import print_fps, print_alive_counter, print_score, print_information 
+from srcNN.neural_network import Matrix
+import srcNN.config as config 
 
 # Method to normalize a value between -1 and 1
 def normalize(value, min_in, max_in, min_out=-1, max_out=1):
@@ -93,10 +94,16 @@ class Game:
         scores = [hero.ticks_alive for hero in self.heroes]
         best_scores = sorted(scores, reverse=True)[:2]
 
+        best_agent_index = scores.index(best_scores[0])
+        best_agent_index2 = scores.index(best_scores[1])
+        best_network = networks[best_agent_index]
+        best_network2 = networks[best_agent_index2]
+
+        if best_scores[0] > 20000:
+            self.save_best_agent(best_network, best_scores[0])
+
         # Return the best two neural networks and the best score
-        return (networks[scores.index(best_scores[0])], 
-                networks[scores.index(best_scores[1])], 
-                best_scores[0])
+        return (best_network, best_network2, best_scores[0]) 
 
     def update_game(self):
         self.window.display_surface.fill(config.WHITE)
@@ -113,3 +120,13 @@ class Game:
         print_alive_counter(self.window.display_surface, self.alive_counter)
         print_fps(self.window.display_surface, self.FPS)
         print_score(self.window.display_surface, self.score)
+
+    def save_best_agent(self, best_network, best_score):
+        filepath = f"srcNN/best_agents/best_agent_{best_score}.pkl"
+        with open(filepath, 'wb') as f:
+            pickle.dump(best_network, f)
+
+    def load_best_agent(self, filename):
+        filepath = f"srcNN/best_agents/{filename}"
+        with open(filepath, 'rb') as f:
+            return pickle.load(f)

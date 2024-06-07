@@ -1,5 +1,5 @@
 import pygame
-import srcAI.config as config
+import srcNN.config as config
 
 def print_fps(surface, fps):
     font = pygame.font.Font(None, 24)

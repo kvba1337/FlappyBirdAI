@@ -38,9 +38,12 @@ class Hero:
         if y_delta < 0:
             y_delta = int(abs(y_delta) + config.GAME_HEIGHT * 0.8)
         
-        y_state = math.floor(y_delta / 60)
+        if y_delta > config.GAME_HEIGHT * 0.8:
+            y_state = 6 # todo fix jumping over obstacle (roof)
+        else:
+            y_state = math.floor(y_delta / 60)
         
-        print(x_state, y_state)
+        #print(x_state, y_state)
         action = self.brain.select_action(self.state)
         self.state = (x_state, y_state, action)
         self.brain.updateQ(prev_state, self.state, reward)

@@ -1,6 +1,6 @@
 import pygame
 import random
-import srcAI.config as config
+import srcNN.config as config
 
 class Obstacle:
     def __init__(self, x, y, width, height):

@@ -1,12 +1,15 @@
 from copy import deepcopy
-from srcAI.game import Game
-from srcAI.neural_network import NeuralNetwork
-import srcAI.config as config
+from srcNN.game import Game
+from srcNN.neural_network import NeuralNetwork
+import srcNN.config as config
 
 if __name__ == "__main__":
     # Create an initial population of random neural networks
     population = [NeuralNetwork(config.NEURAL_NETWORK_ARCHITECTURE) for _ in range(config.GENERATION_SIZE)]
     gen_number = 1
+
+    # Load the best agent
+    #population[0] = Game.load_best_agent(Game, "best_agent_30902.pkl")
 
     while True:
         game = Game()

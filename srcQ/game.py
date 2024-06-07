@@ -1,4 +1,5 @@
 import pygame
+import pickle
 from pygame.locals import *
 from srcQ.window import Window 
 from srcQ.hero import Hero 
@@ -42,6 +43,9 @@ class Game:
                     self.hero.flap()
     
     def run(self):
+        # Load the best agent
+        #self.load_best_agent("best_agent_24941.pkl")
+        
         while True:
             start_time = pygame.time.get_ticks()
             self.alive_counter = 0
@@ -69,9 +73,21 @@ class Game:
             
             if self.score > self.best_score:
                 self.best_score = self.score
+                if self.best_score >= 20000:
+                    self.save_best_agent(f"best_agent_{self.best_score}.pkl")
             
             self.start_game()
 
         print_fps(self.window.display_surface, self.FPS)
         print_score(self.window.display_surface, self.score, self.best_score)
         print_generation(self.window.display_surface, self.generation)
+
+    def save_best_agent(self, filename):
+        filepath = f"srcQ/best_agents/{filename}"
+        with open(filepath, 'wb') as f:
+            pickle.dump(self.qlearn.Q, f)
+
+    def load_best_agent(self, filename):
+        filepath = f"srcQ/best_agents/{filename}"
+        with open(filepath, 'rb') as f:
+            self.qlearn.Q = pickle.load(f)

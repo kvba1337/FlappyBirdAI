@@ -1,5 +1,5 @@
 import pygame
-import srcAI.config as config
+import srcNN.config as config
 
 class Hero:
     def __init__(self):
