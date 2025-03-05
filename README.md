@@ -25,10 +25,9 @@ A Flappy Bird game clone with AI implementations using Q-Learning and Neural Net
 
 ## Demo
 
-| Q-Learning                             | Neural Network                               |
-| ----------------------------------- | --------------------------------------- |
-| ![Q-Learning](docs/videos/q-learning.mp4) | ![Neural Network](docs/videos/neural-network.mp4) |
+https://github.com/user-attachments/assets/97fdda5f-c1da-4692-b8e1-14c4747b2af7 
 
+https://github.com/user-attachments/assets/2d04eac7-fd77-4095-9700-c4215fa339b8
 
 ## Requirements
 
