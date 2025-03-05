@@ -1,35 +1,63 @@
-# Flappy Bird AI
+# FlappyBirdAI
 
-This project implements an artificial intelligence (AI) to play a clone of the popular game Flappy Bird using neural networks and genetic algorithms. The AI learns to play the game by evolving generations of neural networks that control the bird's actions.
+A Flappy Bird game clone with AI implementations using Q-Learning and Neural Networks.
 
-Additionally, it includes the implementation of a clone of the Flappy Bird game, allowing users to play the game manually or observe the AI's performance.
+## Features
+
+- Classic Flappy Bird gameplay
+- Q-Learning AI implementation
+- Neural Network AI implementation with genetic algorithm
+- Adjustable simulation speed
+- Performance tracking
+
+##  AI Implementations
+
+### Q-Learning
+- State space: Bird position relative to obstacles
+- Actions: Flap or don't flap
+- Reward system: Positive for survival, negative for collision
+
+### Neural Network
+- 4-layer neural network with genetic algorithm
+- Input: Distance to obstacles and velocity
+- Population-based training with mutations and crossover
+- Best agents are saved automatically
+
+## Demo
+
+| Q-Learning                             | Neural Network                               |
+| ----------------------------------- | --------------------------------------- |
+| ![Q-Learning](docs/videos/q-learning.mp4) | ![Neural Network](docs/videos/neural-network.mp4) |
+
 
 ## Requirements
 
-- Pygame library (`pip install pygame`)
+- Python 3.x
+- Pygame
 
-## How it Works
+## How to Run
 
-The AI utilizes neural networks to make decisions for the hero's actions (flapping). Here's a brief overview of the process:
+Choose one of the three gameplay options:
 
-1. **Initialization**: An initial population of random neural networks is created.
+```bash
+# Play manually
+python user.py
 
-2. **Game Execution**:
-    - The game is executed with each neural network in the population.
-    - The AI collects data on the performance of each network based on the game score and duration of survival.
+# Run Q-Learning AI
+python qlearning.py
 
-3. **Selection**:
-    - The best-performing networks are selected to form the next generation.
-    - Some random networks are also added to prevent getting stuck in local minima.
+# Run Neural Network AI with genetic algorithm
+python nn.py
+```
 
-4. **Crossover and Mutation**:
-    - The remaining slots in the next generation are filled by combining the characteristics of the best networks through crossover and introducing random mutations.
+## Controls
 
-5. **Repeat**:
-    - Steps 2 to 4 are repeated for multiple generations until the AI achieves satisfactory performance.
+**Manual Play:**
+- `Space` / `Up Arrow` - Flap
+- `P` / `Esc` - Pause/Resume
+- `Esc` (when game over) - Restart
 
-## Game Controls
-
-- Press `+` to increase game speed.
-- Press `-` to decrease game speed.
-- Press `ESC` to quit the game.
+**AI Modes:**
+- `+` - Increase simulation speed
+- `-` - Decrease simulation speed
+- `Esc` - Quit
